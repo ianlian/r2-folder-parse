@@ -46,12 +46,13 @@ export async function handleGenerateThumb(request: Request, env: Env, ctx: Execu
         // 处理图片文件
         if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
             try {
-                const jimp = require('jimp');
-                const image = await jimp.read(Buffer.from(fileBuffer));
+                // 修改Jimp导入方式
+                const Jimp = (await import('jimp')).default;
+                const image = await Jimp.read(Buffer.from(fileBuffer));
                 const thumbnailBuffer = await image
                     .resize(300, 300)
                     .quality(80)
-                    .getBufferAsync(jimp.MIME_JPEG);
+                    .getBufferAsync(Jimp.MIME_JPEG);
                 
                 await env.MY_BUCKET.put(thumbKey, thumbnailBuffer);
                 thumbnails.push({
