@@ -13,8 +13,17 @@
 export interface Env {
     MY_BUCKET: R2Bucket; // 添加 R2 存储桶绑定
 }
+import { handleGenerateThumb } from './generateThumb';
+
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
+		const url = new URL(request.url);
+		const path = url.pathname;
+		
+		if (path === "/generate-thumb" && request.method === "GET") {
+			return handleGenerateThumb(request, env, ctx);
+		}
+		
 		return new Response('Hello World!');
 	},
 } satisfies ExportedHandler<Env>;
