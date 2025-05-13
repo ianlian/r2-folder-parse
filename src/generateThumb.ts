@@ -1,5 +1,6 @@
 import { Env } from './index';
 //import sharp from 'sharp';
+import Jimp from 'jimp';
 
 export async function handleGenerateThumb(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   try {
@@ -47,7 +48,7 @@ export async function handleGenerateThumb(request: Request, env: Env, ctx: Execu
         if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
             try {
                 // 修改Jimp导入方式
-                const Jimp = (await import('jimp')).default;
+                //const Jimp = (await import('jimp')).default;
                 const image = await Jimp.read(Buffer.from(fileBuffer));
                 const thumbnailBuffer = await image
                     .resize(300, 300)
