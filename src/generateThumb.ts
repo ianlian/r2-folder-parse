@@ -1,4 +1,4 @@
-import { Env } from '../types';
+import { Env } from './index';
 import sharp from 'sharp';
 
 export async function handleGenerateThumb(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
