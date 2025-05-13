@@ -1,6 +1,5 @@
 import { Env } from './index';
-//import sharp from 'sharp';
-import Jimp from 'jimp';
+import * as Jimp from 'jimp'; // 使用命名导入
 
 export async function handleGenerateThumb(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   try {
@@ -47,8 +46,6 @@ export async function handleGenerateThumb(request: Request, env: Env, ctx: Execu
         // 处理图片文件
         if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
             try {
-                // 修改Jimp导入方式
-                //const Jimp = (await import('jimp')).default;
                 const image = await Jimp.read(Buffer.from(fileBuffer));
                 const thumbnailBuffer = await image
                     .resize(300, 300)
