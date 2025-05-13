@@ -1,5 +1,5 @@
 import { Env } from './index';
-import sharp from 'sharp';
+//import sharp from 'sharp';
 
 export async function handleGenerateThumb(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   try {
@@ -45,22 +45,23 @@ export async function handleGenerateThumb(request: Request, env: Env, ctx: Execu
         
         // 处理图片文件
         if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-          try {
-            // 使用Sharp生成缩略图
-            const thumbnailBuffer = await sharp(Buffer.from(fileBuffer))
-              .resize(300, 300, { fit: 'inside' })
-              .jpeg({ quality: 80 })
-              .toBuffer();
-            
-            await env.MY_BUCKET.put(thumbKey, thumbnailBuffer);
-            thumbnails.push({
-              original: fileKey,
-              thumbnail: thumbKey,
-              type: 'image'
-            });
-          } catch (error) {
-            console.error(`图片缩略图生成失败: ${fileKey}`, error);
-          }
+            try {
+                const jimp = require('jimp');
+                const image = await jimp.read(Buffer.from(fileBuffer));
+                const thumbnailBuffer = await image
+                    .resize(300, 300)
+                    .quality(80)
+                    .getBufferAsync(jimp.MIME_JPEG);
+                
+                await env.MY_BUCKET.put(thumbKey, thumbnailBuffer);
+                thumbnails.push({
+                    original: fileKey,
+                    thumbnail: thumbKey,
+                    type: 'image'
+                });
+            } catch (error) {
+                console.error(`图片缩略图生成失败: ${fileKey}`, error);
+            }
         }
         // 处理视频文件
         //else if (['mp4', 'm4v', 'mov'].includes(fileExtension)) {
